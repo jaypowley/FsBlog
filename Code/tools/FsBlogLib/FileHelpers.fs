@@ -7,6 +7,9 @@ open System.IO
 
 module FileHelpers =
 
+  /// Concantenate path using the right separator
+  let (++) p1 p2 = Path.Combine(p1, p2)
+
   /// Delete directory if it exists
   let SafeDeleteDir (directory:string) recurse =
     if Directory.Exists(directory) then

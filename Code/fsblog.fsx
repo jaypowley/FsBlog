@@ -21,19 +21,10 @@ open Fake
 open Fake.Git
 open System
 open System.IO
-open System.Net
-open System.Diagnostics
-open System.Threading
 open FsBlogLib
+open FsBlogLib.FileHelpers
 open FSharp.Configuration
-open Suave
-open Suave.Web
-open Suave.Files
-open Suave.Sockets
-open Suave.Sockets.Control
-open Suave.WebSocket
-open Suave.Operators
-
+open FSharp.Http
 
 // --------------------------------------------------------------------------------------
 // Configuration.
@@ -41,9 +32,9 @@ open Suave.Operators
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 type Config = YamlConfig<"config/config.yml">
 
-let config = new Config()
+let config = Config()
+let root = config.url.AbsoluteUri
 let title = config.title
-let subtitle = config.subtitle
 let description = config.description
 let gitLocation = config.gitlocation
 let gitbranch = config.gitbranch
@@ -51,6 +42,8 @@ let gitbranch = config.gitbranch
 let source = __SOURCE_DIRECTORY__ ++ config.source
 let blog = __SOURCE_DIRECTORY__ ++ config.blog
 let blogIndex = __SOURCE_DIRECTORY__ ++ config.blogIndex
+let beers = __SOURCE_DIRECTORY__ ++ config.beers
+let beerIndex = __SOURCE_DIRECTORY__ ++ config.beerIndex
 let themes = __SOURCE_DIRECTORY__ ++ config.themes
 let content = __SOURCE_DIRECTORY__ ++ config.content
 let layouts = content ++ config.layouts
@@ -83,14 +76,15 @@ let buildSite routing updateTagArchive =
         | Preview -> "http://localhost:8080"
 
     let dependencies = [ yield! Directory.GetFiles(layouts) ]
-    let noModel = { Root = root; SiteTitle = title; SiteSubtitle = subtitle; MonthlyPosts = [||]; Posts = [||]; TaglyPosts = [||]; GenerateAll = true }
-    let razor = new Razor(layouts, Model = noModel)
-    let model =  Blog.LoadModel(tagRenames, Blog.TransformAsTemp (template, source) razor, root, blog, title, subtitle)
+    let noModel = { Blog.Root=root; Blog.Posts = [||]; Blog.MonthlyPosts=[||]; Blog.MonthlyBeerPosts=[||]; Blog.TaglyPosts=[||]; Blog.Beers=[||]; Blog.GenerateAll=true; Blog.Title=title; Blog.AllPosts=[||]; }
+    let razor = FsBlogLib.Razor(layouts, Model = noModel)
+    let model =  Blog.LoadModel(tagRenames, Blog.TransformAsTemp (template, source) razor, root, blog, beers, title)
 
     // Generate RSS feed
-    Blog.GenerateRss root title description model rsscount (output ++ "rss.xml")
+    Blog.GenerateRss root title description model rsscount (output ++ "feed.xml")
 
     let uk = System.Globalization.CultureInfo.GetCultureInfo("en-GB")
+   
     Blog.GeneratePostListing
         layouts template blogIndex model model.MonthlyPosts
         (fun (y, m, _) -> output ++ "blog" ++ "archive" ++ (m.ToLower() + "-" + (string y)) ++ "index.html")
@@ -98,13 +92,12 @@ let buildSite routing updateTagArchive =
         (fun (y, m, _) -> sprintf "%d %s" y m)
         (fun (_, _, p) -> p)
 
-    if updateTagArchive then
-        Blog.GeneratePostListing
-            layouts template blogIndex model model.TaglyPosts
-            (fun (_, u, _) -> output ++ "blog" ++ "tag" ++ u ++ "index.html")
-            (fun (_, _, _) -> true)
-            (fun (t, _, _) -> t)
-            (fun (_, _, p) -> p)
+    Blog.GenerateBeerListing
+        layouts template beerIndex model model.MonthlyBeerPosts
+        (fun (y, m, _) -> output ++ "beer" ++ "archive" ++ (m.ToLower() + "-" + (string y)) ++ "index.html")
+        (fun (y, m, _) -> y = DateTime.Now.Year && m = uk.DateTimeFormat.GetMonthName(DateTime.Now.Month))
+        (fun (y, m, _) -> sprintf "%d %s" y m)
+        (fun (_, _, p) -> p)
 
     let filesToProcess =
         FileHelpers.GetSourceFiles source output
@@ -112,54 +105,13 @@ let buildSite routing updateTagArchive =
         |> FileHelpers.TransformOutputFiles output source
         |> FileHelpers.FilterChangedFiles dependencies special
 
-    let razor = new Razor(layouts, Model = model)
+    let razor = FsBlogLib.Razor(layouts, Model = model)
     for current, target in filesToProcess do
         FileHelpers.EnsureDirectory(Path.GetDirectoryName(target))
         printfn "Processing file: %s" (current.Substring(source.Length))
         Blog.TransformFile template true razor None current target
 
     FileHelpers.CopyFiles content output
-
-// --------------------------------------------------------------------------------------
-// Webserver stuff
-// --------------------------------------------------------------------------------------
-
-let refreshEvent = new Event<_>()
-
-let handleWatcherEvents (events:FileChange seq) =
-    for e in events do
-        let fi = fileInfo e.FullPath
-        traceImportant <| sprintf "%s was changed." fi.Name
-        match fi.Attributes.HasFlag FileAttributes.Hidden || fi.Attributes.HasFlag FileAttributes.Directory with
-        | true -> ()
-        | _ ->  buildSite Preview false // TODO optimize based on which file has changed
-    refreshEvent.Trigger()
-
-let socketHandler (webSocket : WebSocket) =
-  fun cx -> socket {
-    while true do
-      let! refreshed =
-        Control.Async.AwaitEvent(refreshEvent.Publish)
-        |> Suave.Sockets.SocketOp.ofAsync
-      do! webSocket.send Text (new ByteSegment(System.Text.Encoding.UTF8.GetBytes "refreshed")) true
-  }
-
-let startWebServer () =
-    printfn "starting webserver: %s" (FullName output)
-    let serverConfig =
-        { defaultConfig with
-           homeFolder = Some (FullName output)
-           bindings = [HttpBinding.create HTTP IPAddress.Loopback 8080us]
-        }
-    let app =
-      choose [
-        Filters.path "/websocket" >=> handShake socketHandler
-        Writers.setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
-        >=> Writers.setHeader "Pragma" "no-cache"
-        >=> Writers.setHeader "Expires" "0"
-        >=> browseHome ]
-    startWebServerAsync serverConfig app |> snd |> Async.Start
-    Process.Start "http://localhost:8080/index.html" |> ignore
 
 // --------------------------------------------------------------------------------------
 // Static site tooling as a set of targets.
@@ -171,24 +123,24 @@ Target "Generate" (fun _ ->
 )
 
 Target "Preview" (fun _ ->
-
     buildSite Preview true
 
-    use watcherDynamic = !! (source + "**/*.*") |> WatchChanges (fun changes ->
-        printfn "Dynamic: %A" changes
-        handleWatcherEvents changes
-    )
-
-    use watcherStatic = !! (content + "/**/*.*") |> WatchChanges (fun changes ->
-        printfn "Static: %A" changes
-        handleWatcherEvents changes
-    )
-
-    startWebServer ()
+    let server : ref<option<HttpServer>> = ref None
+    
+    let stop () = server.Value |> Option.iter (fun v -> v.Stop())
+    
+    let run() =
+        let url = "http://localhost:8080/" 
+        stop ()
+        server := Some(HttpServer.Start(url, output, Replacements = [root, url]))
+        printfn "Starting web server at %s" url
+        System.Diagnostics.Process.Start(url) |> ignore
+        
+    run ()
 
     traceImportant "Press Ctrl+C to stop!"
-    // wat!?
-    Thread.Sleep(-1)
+    
+    while true do ()
 )
 
 Target "New" (fun _ ->
@@ -199,9 +151,9 @@ Target "New" (fun _ ->
 
     match page, post, fsx with
     | "", "", "" -> traceError "Please specify either a new 'page', 'post' or 'fsx'."
-    | _, "", ""  -> BlogPosts.CreateMarkdownPage source page
-    | "", _, ""  -> BlogPosts.CreateMarkdownPost blog post
-    | "", "", _  -> BlogPosts.CreateFsxPost blog fsx
+    | _, "", ""  -> PostHelpers.CreateMarkdownPage source page
+    | "", _, ""  -> PostHelpers.CreateMarkdownPost blog post
+    | "", "", _  -> PostHelpers.CreateFsxPost blog fsx
     | _, _, _    -> traceError "Please specify only one argument, 'post' or 'fsx'."
 )
 

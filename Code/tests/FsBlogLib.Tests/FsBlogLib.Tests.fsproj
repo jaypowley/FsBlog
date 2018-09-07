@@ -67,10 +67,6 @@
   -->
   <Import Project="..\..\.paket\paket.targets" />
   <ItemGroup>
-    <Compile Include="..\..\paket-files\forki\FsUnit\FsUnit.fs">
-      <Paket>True</Paket>
-      <Link>FsUnit.fs</Link>
-    </Compile>
     <Compile Include="BlogPostsTest.fs" />
     <Compile Include="BlogTests.fs" />
     <None Include="paket.references" />
