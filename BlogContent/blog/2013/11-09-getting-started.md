@@ -1,7 +1,7 @@
 @{
     Layout = "post";
     Title = "Getting Started";
-    Date = "2013-11-09T12:38:14";
+    AddedDate = "2013-11-09T12:38:14";
     Tags = "";
     Description = "";
 }

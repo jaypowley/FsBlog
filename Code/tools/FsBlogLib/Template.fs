@@ -93,9 +93,9 @@ type TemplateBaseExtensions<'T>() =
     member x.Tags
         with get() = defaultArg (x.tryGetViewBagValue<string> "Tags") ""
         and set value = x.trySetViewBagValue<string> "Tags" value
-    member x.Date
-        with get() = defaultArg (x.tryGetViewBagValue<string> "Date") ""
-        and set value = x.trySetViewBagValue<string> "Date" value
+    member x.AddedDate
+        with get() = defaultArg (x.tryGetViewBagValue<string> "AddedDate") ""
+        and set value = x.trySetViewBagValue<string> "AddedDate" value
     member x.Url
         with get() = defaultArg (x.tryGetViewBagValue<string> "Url") ""
         and set value = x.trySetViewBagValue<string> "Url" value

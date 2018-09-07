@@ -26,26 +26,7 @@ type Razor(layoutsRoot) =
         config.Debug <- true
         let templateservice = new TemplateService(config)
         Razor.SetTemplateService(templateservice)
-(*
-    member x.LoadMarkdownFragment fragment =
-        x.viewBag <- new DynamicViewBag()
 
-        let markdownGuid = (new System.Guid()).ToString()
-        try
-            Razor.Compile(fragment, markdownGuid)
-            let tmpl = Razor.Resolve(markdownGuid, model)
-            let result = tmpl.Run(new ExecuteContext(x.viewBag))
-            let utmpl = (tmpl :?> FsBlogLib.TemplateBaseExtensions<_>)
-            let z = (utmpl :> RazorEngine.Templating.ITemplate)
-            (utmpl, result)
-        with
-            | :? TemplateCompilationException as ex ->
-                printfn "-- Source Code --"
-                ex.SourceCode.Split('\n')
-                |> Array.iteri(printfn "%i: %s")
-                ex.Errors |> Seq.iter(fun w -> printfn "%i(%i): %s" w.Line w.Column w.ErrorText)
-                failwithf "Exception compiling markdown fragment: %A" ex.Message
-*)
     member val Model = obj() with get, set
     member val ViewBag = new DynamicViewBag() with get,set
 

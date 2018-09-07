@@ -1,6 +1,7 @@
 ﻿module FsBlogLib.Tests.BlogPostsTests
 
 open FsBlogLib
+open FsBlogLib.FileHelpers
 open System
 open System.IO
 open NUnit.Framework
@@ -11,5 +12,5 @@ let ``Create blog post`` () =
     let title = "FsharpTest"
     let dateFormat = DateTime.Now
     let expectedPath = path ++ dateFormat.Year.ToString() ++ sprintf "%02i-%02i-%s" dateFormat.Month dateFormat.Day "fsharptest.md"
-    BlogPosts.CreateMarkdownPost path title
+    PostHelpers.CreateMarkdownPost path title
     Assert.True(File.Exists(expectedPath))
