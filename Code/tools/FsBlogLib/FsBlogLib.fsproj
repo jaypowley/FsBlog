@@ -56,7 +56,7 @@
     <Compile Include="PostHelpers.fs" />
     <Compile Include="BeerPosts.fs" />
     <Compile Include="Blog.fs" />
-    <Compile Include="..\..\..\..\..\..\source\repos\FsBlog\Code\tools\FsBlogLib\HttpServer.fs" />
+    <Compile Include="HttpServer.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
