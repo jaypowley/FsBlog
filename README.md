@@ -4,9 +4,7 @@
 
 ## Getting started
 
-You can just grab the **NuGet** package and jump straight on to **Usage** below.
-
-Alternatively you can fork or clone the [FsBlog repo](https://github.com/fsprojects/FsBlog), then run:
+Fork or clone the repo, then run:
 
     build
 
@@ -37,6 +35,10 @@ Will create a new *blank* Markdown file in your blog's source files ready for yo
 
 Will create a new *blank* Markdown file in your blog's source files ready for you to hack away at your next blog post.
 
+    fake new beer="hello beer"
+
+Will create a new *blank* Markdown file in your beer's source files ready for you to hack away at your next beer post.
+
     fake new fsx="hello fsharp"
 
 Will create a new *blank* `.fsx` file in your blog's source files ready for you to hack away at your next code-heavy blog post. To find out more about using `.fsx` files as the source of your posts, check out [F# Formatting: Literate programming](http://tpetricek.github.io/FSharp.Formatting/demo.html).
@@ -66,14 +68,3 @@ The `config.yml` is a [YAML](http://yaml.org/) file that contains configuration 
 
 Note: the documentation above is currently little more than a specification for the command line tooling. It is currently subject to change.
 
-This project is at a very early stage - so bare with me.
-
-
-## Maintainer(s)
-
-- [@MattDrivenDev](https://github.com/MattDrivenDev)
-- [@nelak](https://github.com/nelak)
-- [@cdrnet](https://github.com/cdrnet)
-- [@tpetricek](https://github.com/tpetricek)
-
-The default maintainer account for projects under "fsprojects" is [@fsprojectsgit](https://github.com/fsprojectsgit) - F# Community Project Incubation Space (repo management)
