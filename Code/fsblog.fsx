@@ -144,17 +144,19 @@ Target "Preview" (fun _ ->
 )
 
 Target "New" (fun _ ->
-    let post, fsx, page =
+    let post, fsx, page, beer =
         getBuildParam "post",
         getBuildParam "fsx",
-        getBuildParam "page"
+        getBuildParam "page",
+        getBuildParam "beer"
 
-    match page, post, fsx with
-    | "", "", "" -> traceError "Please specify either a new 'page', 'post' or 'fsx'."
-    | _, "", ""  -> PostHelpers.CreateMarkdownPage source page
-    | "", _, ""  -> PostHelpers.CreateMarkdownPost blog post
-    | "", "", _  -> PostHelpers.CreateFsxPost blog fsx
-    | _, _, _    -> traceError "Please specify only one argument, 'post' or 'fsx'."
+    match page, post, fsx, beer with
+    | "", "", "", "" -> traceError "Please specify either a new 'page', 'post', 'beer', or 'fsx'."
+    | _, "", "", ""  -> PostHelpers.CreateMarkdownPage source page
+    | "", _, "", ""  -> PostHelpers.CreateMarkdownPost blog post
+    | "", "", _, ""  -> PostHelpers.CreateFsxPost blog fsx
+    | "", "", "", _  -> PostHelpers.CreateMarkdownPost beers beer
+    | _, _, _, _    -> traceError "Please specify only one argument, 'post' or 'fsx'."
 )
 
 Target "Clean" (fun _ ->
