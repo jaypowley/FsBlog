@@ -1,0 +1,33 @@
+@{
+    Layout = "postdefault";
+}
+
+<article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+    <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">@Title</h1>
+        <p class="post-meta">
+            <time datetime="@AddedDate" itemprop="datePublished">@DateTime.Parse(AddedDate).ToString("MMMM dd, yyyy")</time>
+            <br />🏷️
+             
+            @{
+                if (Tags.Trim() != String.Empty)
+                {
+                    var beerTagList = Tags.Split(',').ToList();
+
+                    for( int i = 0; i < beerTagList.Count; i++ )
+                    {
+                        var urlFriendlyName = beerTagList[i].Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower();
+                        <a href="~/beer/tags/@urlFriendlyName/index.html">@beerTagList[i]</a>
+                        if( i < beerTagList.Count - 1 )
+                        {
+                            <text>,</text>
+                        }
+                    }
+                }
+            }
+        </p>
+    </header>
+    <div class="post-content" itemprop="articleBody">
+        @RenderBody()
+    </div>
+</article>

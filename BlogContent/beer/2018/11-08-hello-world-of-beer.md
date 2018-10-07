@@ -1,31 +1,36 @@
 @{
-    Layout = "post";
+    Layout = "beerpost";
     Title = "Hello world...of beer!";
     AddedDate = "2013-11-08T11:27:31";
-    Tags = "";
-    Description = "Introducing FsBlog - a blog-aware static site generator using F#.";
+    Tags = "Quad";
+    Description = "Introducing the beer blog.";
 }
 
-**FsBlog** aims to be a blog-aware static site generator, mostly built in `F#` for .NET and Mono developers. 
+## Sua omnia in turbida parantem Ulixes decorum
 
-<!--more-->
+*Lorem* markdownum dixit risitque, socialis! Et carius, sed qui vultus urbis
+captat refovet fortuna inque!
 
-But don't worry, you won't even need to know any F# to get up and running. So long as you are comfortable using a command line or terminal, and have a degree of familiarity with Markdown and Razor syntax - you're already most of the way there!
+## Stellantibus ipsa exemplis
 
-Inspired by the likes of **Jekyll** and **Octopress** - and greatly helped along the way by the scripts behind [@@tomaspetricek](https://twitter.com/tomaspetricek)'s personal website; FsBlog gives the average .NET or Mono dev the tools that they need to get a statically built website up and running quickly and hosted somewhere like [Github Pages](http://pages.github.com/).
+Resolutaque tamen terram et *nato* carinas operum, *vitiaverat* pede nomine
+timorem; per noctem torsit. Pressit incola, **alias** mos est iuvencos vulnus,
+dicenti fibras Peragit sinunt, oculos *tecti*: ego latet que.
 
-This set of tools have been pulled together using some of the following community projects:
+## Quotiensque nihil in invidit stellas est pectora
 
-* [FAKE](http://fsharp.github.io/FAKE/) for automation and scripting of the different tasks.
-* [F# Formatting](http://tpetricek.github.io/FSharp.Formatting/) for Markdown and F# literate programming, processing and colorization.
-* [RazorEngine](https://github.com/Antaris/RazorEngine) which is used for the templating and embedded `C#` code.
-* Some of the code in **FsBlogLib** that calls the **RazorEngine** has been based on F# code in [Tilde](https://github.com/aktowns/tilde).
-* [Github Pages](http://pages.github.com/) for our default theme.
+Natae per simul circuit, acuto positi tormenta vacavit dubitare; eas unam,
+perpetuoque vimque, cum. Vultus serpens effectum facit: contingere hospite. Aut
+ora cum haec mandere *Ocyroen cognoscit*, in semper at verba. Dum torva; ardent
+caput nomine finxit; exul poena!
 
-## Development
+## Eris nec nota vos
 
-It is very early days and we haven't yet reached anything vaguely resembling a version 1.0 of the software.
+Solidam maternis de veri, sol ira vota roganti gramine? Fuit ignarus sorores est
+dedit hunc tura in insula, arma, indignatus, circumsonat ore. Et cui, nominis
+magnas, quae tectum ipse media; **est** exsiluit ille *coit et* adversum. Sonat
+est Pico arvo obrutaque; bracchia illa umbra heros iam colorum verso, subiit
+crine propensum quis fontesque terras!
 
-You can track the progress of the development, outstanding issues and check what we're working towards by checking out the [Issues](https://github.com/fsprojects/FsBlog/issues) and [Milestones](https://github.com/fsprojects/FsBlog/milestones) sections of our repository.
-
-If you find a bug, or have a request or whatever - please raise a new issue there! or even better make the change and open a pull request.
+Forma et Iovem maternis cecidere et signa; esse erat quinque, iaculo, suppressit
+potentia male duobus eandem. Dat fit a inhaerebat aquis pendebant.

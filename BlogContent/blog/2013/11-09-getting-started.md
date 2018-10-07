@@ -1,83 +1,34 @@
 @{
-    Layout = "post";
+    Layout = "blogpost";
     Title = "Getting Started";
     AddedDate = "2013-11-09T12:38:14";
-    Tags = "";
+    Tags = "Code";
     Description = "";
 }
 
-If you've much experience with other static site generators like *Octopress* or *Jekyll* most of this should be fairly familiar, if not, hopefully it won't be too difficult to pick up.
+Markdown Ipsum Presents
+=======================
 
-<!--more-->
+**Pellentesque habitant morbi tristique** senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. _Aenean ultricies mi vitae est_. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, `commodo vitae`, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum  rutrum orci, sagittis tempus lacus enim ac dui. [Donec non enim](#) in turpis pulvinar facilisis. Ut felis.
 
-## Command line
+Header Level 2
+--------------
 
-FsBlog tends to rely on the fact that you're using the command line or terminal - almost all interaction with FsBlog and git are documented as such.
+  1. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+  2. Aliquam tincidunt mauris eu risus.
 
-## Dependencies
 
-Although X-Platform is a goal for the [not-too-distant-future](https://github.com/fsprojects/FsBlog/issues?milestone=2&state=open) - at the moment you'll need:
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur  massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.
 
-* .NET 4.5
-* F# 3.0
-* VS2012 or VS2013
-* A git client
+### Header Level 3
 
-If you follow the instructions for [using F# on Windows](http://fsharp.org/use/windows/) you'll probably be good to go.
+  * Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+  * Aliquam tincidunt mauris eu risus.
 
-## 1. Setup FsBlog
-
-First you'll need to clone the repo. On your command line, using git:
-
-    [lang=sh]
-    git clone git://github.com/fsprojects/FsBlog.git FsBlog
-    cd FsBlog
-
-Next, run the build:
-
-    [lang=sh]
-    ./build
-
-This should install a few [NuGet](http://www.nuget.org/) dependencies that FsBlog makes use of.
-
-## 2. Configuration
-
-Using your favourite F# code editor, edit the following section of the `./fsblog.fsx` file in your repo:
-
-    [lang=fsharp]
-    // --------------------------------------------------------------------------------------
-    // Configuration.
-    // --------------------------------------------------------------------------------------
-    Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
-    let root = "http://fsprojects.github.io/FsBlog"
-    let title = "FsBlog - F# static site generation"
-    let description = """
-        FsBlog aims to be a blog-aware static site generator, mostly built in F#. But don't worry, 
-        you won't even need to know any F# to get up and running. So long as you are comfortable 
-        using a command line or terminal, and have a degree of familiarity with Markdown and Razor 
-        syntax - you're good to go!"""
-
-There isn't a whole lot to change right now, but at some point you'll be able to configure a Twitter handle, GitHub account etc.
-
-## 3. Create a post
-
-Again on your command line:
-
-    [lang=sh]
-    ./fake new post="post title"
-
-This will create a new file in the following location, ready for you to edit: `./source/blog/yyyy/MM-dd-title.md`.
-
-## 4. Generate and preview
-
-You can generate your website at any time from the command line using the following command:
-
-    [lang=sh]
-    ./fake generate
-
-If you also want to preview your website, you can run the following command:
-
-    [lang=sh]
-    ./fake preview
-
-The `preview` command will also `generate` the website too.
+```
+#header h1 a {
+  display: block;
+  width: 300px;
+  height: 80px;
+}
+```

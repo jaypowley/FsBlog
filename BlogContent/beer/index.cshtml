@@ -1,11 +1,20 @@
 @{
     Layout = "default";
-    Title = "FsBlog";
-    Description = "A blog aware static site generator in mostly F#";
+    Title = "Beer";
+    Description = "A collection of (most) of the beer I drink and remember to write about.";
 }
-@using System.Linq
 
-@foreach (var post in Enumerable.Take(Model.Beers, 10))
+<p>Welcome to my beer diary.</p>
+
+<p>These are posts of the beers I've tried and either the descriptions of them directly from the brewery, <a href="https://about.tavour.com/">Tavour</a>, or my personal tastes. 
+Sadly, these will be posted nearly daily, or until I run low on funds or my wife decides I need to cut back.😂</p>
+
+<ul class="post-list">
+@foreach (var post in Model.Beers)
 {
-    <a href="@post.Url/index.html">@post.Title</a><br />
+    <li>
+        <span class="post-meta">@post.AddedDate.ToString("MMM dd, yyyy")</span>
+        <a class="post-link" href="@post.Url/index.html">@post.Title</a>
+    </li>
 }
+</ul>

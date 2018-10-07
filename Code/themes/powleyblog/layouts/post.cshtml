@@ -1,0 +1,13 @@
+@{
+    Layout = "postdefault";
+}
+
+<article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+    <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">@Title</h1>
+        <p class="post-meta"><time datetime="@AddedDate" itemprop="datePublished">@DateTime.Parse(AddedDate).ToString("MMMM dd, yyyy")</time></p>
+    </header>
+    <div class="post-content" itemprop="articleBody">
+        @RenderBody()
+    </div>
+</article>
