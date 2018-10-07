@@ -76,7 +76,7 @@ module PostHelpers =
   /// Loads information about all posts
   let LoadPosts (tagRenames:System.Collections.Generic.IDictionary<string, string>) transformer posts parseHeader =
     let renameTag tag = 
-      match tagRenames.TryGetValue(tag) with true, s -> s | _ -> tag.ToLower()
+      match tagRenames.TryGetValue(tag) with true, s -> s | _ -> tag //.ToLower()
     GetPostFiles posts 
     |> Seq.mapi (fun i v -> 
         GetPostHeaderAndAbstract transformer (sprintf "abs%d_" i) v 

@@ -76,28 +76,14 @@ let buildSite routing updateTagArchive =
         | Preview -> "http://localhost:8080"
 
     let dependencies = [ yield! Directory.GetFiles(layouts) ]
-    let noModel = { Blog.Root=root; Blog.Posts = [||]; Blog.MonthlyPosts=[||]; Blog.MonthlyBeerPosts=[||]; Blog.TaglyPosts=[||]; Blog.Beers=[||]; Blog.GenerateAll=true; Blog.Title=title; Blog.AllPosts=[||]; }
+    let noModel = { Blog.Root=root; Blog.Posts = [||]; Blog.MonthlyPosts=[||]; Blog.MonthlyBeerPosts=[||]; Blog.TaggedPosts=[||]; Blog.TaggedBeers=[||]; Blog.Beers=[||]; Blog.GenerateAll=true; Blog.Title=title; Blog.AllPosts=[||]; }
     let razor = FsBlogLib.Razor(layouts, Model = noModel)
     let model =  Blog.LoadModel(tagRenames, Blog.TransformAsTemp (template, source) razor, root, blog, beers, title)
 
     // Generate RSS feed
     Blog.GenerateRss root title description model rsscount (output ++ "feed.xml")
-
-    let uk = System.Globalization.CultureInfo.GetCultureInfo("en-GB")
-   
-    Blog.GeneratePostListing
-        layouts template blogIndex model model.MonthlyPosts
-        (fun (y, m, _) -> output ++ "blog" ++ "archive" ++ (m.ToLower() + "-" + (string y)) ++ "index.html")
-        (fun (y, m, _) -> y = DateTime.Now.Year && m = uk.DateTimeFormat.GetMonthName(DateTime.Now.Month))
-        (fun (y, m, _) -> sprintf "%d %s" y m)
-        (fun (_, _, p) -> p)
-
-    Blog.GenerateBeerListing
-        layouts template beerIndex model model.MonthlyBeerPosts
-        (fun (y, m, _) -> output ++ "beer" ++ "archive" ++ (m.ToLower() + "-" + (string y)) ++ "index.html")
-        (fun (y, m, _) -> y = DateTime.Now.Year && m = uk.DateTimeFormat.GetMonthName(DateTime.Now.Month))
-        (fun (y, m, _) -> sprintf "%d %s" y m)
-        (fun (_, _, p) -> p)
+    
+    Blog.GenerateTagListing layouts template model output
 
     let filesToProcess =
         FileHelpers.GetSourceFiles source output
