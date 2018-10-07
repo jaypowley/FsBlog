@@ -1,0 +1,32 @@
+@using System.Linq
+@helper PostDate(DateTime rawDate) {
+    <time datetime="@rawDate.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")" pubdate data-updated="true">@rawDate.ToString("MMM d, yyyy")</time>
+}
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Hi, I'm Jason. I'm a Senior .NET Developer based in Mechanicsburg, PA, USA.">
+    <title>@Title</title>
+    <link rel="stylesheet" href="@Model.Root/css/styles.css">
+    <link rel="canonical" href="https://jasonpowley.com/">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Karla:400,400italic,700|Fira+Mono:400,700">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="alternate" href="@Model.Root/feed.xml" title="@Model.Title" type="application/rss+xml">
+    <link rel="shortcut icon" href="@Model.Root/favicon.ico">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->    
+  </head>
+  <body class="home">
+  	<div class="wrapper">
+	    @RenderPart("Header")
+      <section>
+		    @RenderBody()
+      </section>
+      @RenderPart("Footer")
+  	</div>
+  </body>
+</html>
