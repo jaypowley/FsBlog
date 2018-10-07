@@ -9,6 +9,7 @@ open PostHelpers
 open System.Xml.Linq
 open FSharp.Literate
 open BlogTypes
+open TagTypes
 
 // --------------------------------------------------------------------------------------
 // Blog - the main blog functionality
@@ -22,45 +23,55 @@ module Blog =
       Posts : BlogHeader[]
       MonthlyPosts : (int * string * seq<BlogHeader>)[]
       MonthlyBeerPosts : (int * string * seq<BeerHeader>)[]
-      TaglyPosts : (string * string * seq<BlogHeader>)[]
-      Beers : BeerHeader[] //seq<BeerHeader>
+      TaggedPosts : BlogTag[]
+      TaggedBeers : BeerTag[]
+      Beers : BeerHeader[] 
       GenerateAll : bool
       Root : string 
       Title : string }
 
+  let urlFriendly (s:string) = s.Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower()
+  let mapToBlogTagType (tag:string) (posts:seq<_>) = { Name = tag; Posts = posts |> Array.ofSeq } 
+  let mapToBeerTagType (tag:string) (beers:seq<_>) = { Name = tag; Beers = beers |> Array.ofSeq } 
+
   /// Walks over all blog post files and loads model (caches abstracts along the way)
   let LoadModel(tagRenames, transformer, (root:string), blog, beer, title) = 
-    let urlFriendly (s:string) = s.Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot")
-
     let p = LoadPosts tagRenames transformer blog ParseBlogHeader 
     let posts = p |> Array.choose (fun p -> match p with 
                                             | BlogHeader(p) -> Some(p)
                                             | BeerHeader(p) -> None)
     let b = LoadPosts tagRenames transformer beer ParseBeerHeader
     let beers = b |> Array.choose (fun p -> match p with 
-                                                | BlogHeader(p) -> None
-                                                | BeerHeader(p) -> Some(p))
+                                            | BlogHeader(p) -> None
+                                            | BeerHeader(p) -> Some(p))
     let allposts = 
         Array.concat [|p; b|]
         |> Array.sortBy(fun p -> match p with 
-                                    | BlogHeader(p) -> p.AddedDate
-                                    | BeerHeader(p) -> p.AddedDate)
+                                 | BlogHeader(p) -> p.AddedDate
+                                 | BeerHeader(p) -> p.AddedDate)
 
     let uk = System.Globalization.CultureInfo.GetCultureInfo("en-GB")
 
     { AllPosts = allposts
       Posts = posts
       GenerateAll = false
-      TaglyPosts =
+      TaggedPosts =
         query { for p in posts do
                 for t in p.Tags do
                 select t into t
                 distinct
                 let posts = posts |> Seq.filter (fun p -> p.Tags |> Seq.exists ((=) t))
-                let recent = posts |> Seq.filter (fun p -> p.AddedDate > (DateTime.Now.AddYears(-1))) |> Seq.length
-                where (recent > 0)
-                sortByDescending (recent * (Seq.length posts))
-                select (t, urlFriendly t, posts) }
+                select (t, posts) }
+        |> Seq.map (fun (tag, posts) -> mapToBlogTagType tag posts)
+        |> Array.ofSeq
+      TaggedBeers =
+        query { for p in beers do
+                for t in p.Tags do
+                select t into t
+                distinct
+                let beers = beers |> Seq.filter (fun p -> p.Tags |> Seq.exists ((=) t))
+                select (t, beers) }
+        |> Seq.map (fun (tag, beers) -> mapToBeerTagType tag beers)
         |> Array.ofSeq
       MonthlyPosts =
         query { for p in posts do                
@@ -151,22 +162,50 @@ module Blog =
     EnsureDirectory(Path.GetDirectoryName(target))
     File.WriteAllText(target, doc.ToString())
 
-  let GeneratePostListing layouts template blogIndex model posts urlFunc needsUpdate infoFunc getPosts =
-    for item in posts do
-      let model = { model with GenerateAll = true; Posts = Array.ofSeq (getPosts item) }
-      let razor = FsBlogLib.Razor(layouts, Model = model)
-      let target = urlFunc item
-      EnsureDirectory(Path.GetDirectoryName(target))
-      if not (File.Exists(target)) || needsUpdate item then
-        printfn "Generating archive: %s" (infoFunc item)
-        TransformFile template true razor None blogIndex target
+  let GenerateTagListing layouts template model output =
+    let model = { model with GenerateAll = true }
+    let razor = FsBlogLib.Razor(layouts, Model = model)
+    let filterBeers (taggedBeers:BeerTag[]) tagName = 
+        taggedBeers
+        |> Seq.ofArray
+        |> Seq.filter (fun x -> x.Name = tagName)
+        |> Seq.toArray
+    let filterPosts (taggedPosts:BlogTag[]) tagName =
+        taggedPosts
+        |> Seq.ofArray
+        |> Seq.filter (fun x -> x.Name = tagName)
+        |> Seq.toArray
+    
 
-  let GenerateBeerListing layouts template blogIndex model posts urlFunc needsUpdate infoFunc getPosts =
-        for item in posts do
-          let model = { model with GenerateAll = true; Beers = Array.ofSeq (getPosts item) }
-          let razor = FsBlogLib.Razor(layouts, Model = model)
-          let target = urlFunc item
-          EnsureDirectory(Path.GetDirectoryName(target))
-          if not (File.Exists(target)) || needsUpdate item then
-            printfn "Generating archive: %s" (infoFunc item)
-            TransformFile template true razor None blogIndex target
+    //beer tags
+    let beerTarget = output ++ "beer" ++ "tags" ++ "index.html"
+    EnsureDirectory(Path.GetDirectoryName(beerTarget))
+    if not (File.Exists(beerTarget)) then
+        TransformFile template true razor None "../BlogContent/beer/tags/index.cshtml" beerTarget
+
+    for beer in model.TaggedBeers do
+        let tagName = urlFriendly beer.Name
+        let beerTagTarget = output ++ "beer" ++ "tags" ++ tagName ++ "index.html"
+        let beermodel = { model with GenerateAll = true; TaggedBeers = filterBeers model.TaggedBeers beer.Name }
+        let beerrazor = FsBlogLib.Razor(layouts, Model = beermodel)
+        printfn "Generating folder: %s" tagName
+        EnsureDirectory(Path.GetDirectoryName(beerTagTarget))
+        if not (File.Exists(beerTagTarget)) then
+            TransformFile template true beerrazor None "../BlogContent/beer/tags/tag/tagindex.cshtml" beerTagTarget
+
+    //blog tags
+    let blogTarget = output ++ "blog" ++ "tags" ++ "index.html"
+    EnsureDirectory(Path.GetDirectoryName(blogTarget))
+    if not (File.Exists(blogTarget)) then
+        TransformFile template true razor None "../BlogContent/blog/tags/index.cshtml" blogTarget
+
+    for blog in model.TaggedPosts do
+        let tagName = urlFriendly blog.Name
+        let blogTagTarget = output ++ "blog" ++ "tags" ++ tagName ++ "index.html"
+        let blogmodel = { model with GenerateAll = true; TaggedPosts = filterPosts model.TaggedPosts blog.Name }
+        let blograzor = FsBlogLib.Razor(layouts, Model = blogmodel)
+        printfn "Generating folder: %s" tagName
+        EnsureDirectory(Path.GetDirectoryName(blogTagTarget))
+        if not (File.Exists(blogTagTarget)) then
+            TransformFile template true blograzor None "../BlogContent/blog/tags/tag/tagindex.cshtml" blogTagTarget
+

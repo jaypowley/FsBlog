@@ -51,6 +51,7 @@
     <Compile Include="Razor.fs" />
     <Compile Include="FileHelpers.fs" />
     <Compile Include="BlogTypes.fs" />
+    <Compile Include="TagTypes.fs" />
     <Compile Include="BlogPosts.fs" />
     <None Include="paket.references" />
     <Compile Include="PostHelpers.fs" />

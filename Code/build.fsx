@@ -40,8 +40,6 @@ let description = """
 // Pattern specifying assemblies to be tested using xunit
 let testAssemblies = "bin/FsBlogLib/*Tests*.dll"
 
-let tags = "F# fsharp blog website generation"
-
 // Generate assembly info files with the right version & up-to-date information
 Target "AssemblyInfo" (fun _ ->
 
