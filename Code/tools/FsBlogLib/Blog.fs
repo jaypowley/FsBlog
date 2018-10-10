@@ -30,7 +30,7 @@ module Blog =
       Root : string 
       Title : string }
 
-  let urlFriendly (s:string) = s.Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower()
+  let urlFriendly (s:string) = s.Trim().Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower()
   let mapToBlogTagType (tag:string) (posts:seq<_>) = { Name = tag; Posts = posts |> Array.ofSeq } 
   let mapToBeerTagType (tag:string) (beers:seq<_>) = { Name = tag; Beers = beers |> Array.ofSeq } 
 
@@ -176,7 +176,6 @@ module Blog =
         |> Seq.filter (fun x -> x.Name = tagName)
         |> Seq.toArray
     
-
     //beer tags
     let beerTarget = output ++ "beer" ++ "tags" ++ "index.html"
     EnsureDirectory(Path.GetDirectoryName(beerTarget))

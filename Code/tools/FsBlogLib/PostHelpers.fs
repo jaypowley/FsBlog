@@ -91,8 +91,6 @@ module PostHelpers =
     AddedDate = "%s";
     Tags = "";
     Description = "";
-    Image = "";
-    PostAuthor = "";
 }"""    layout title (date.ToString("yyyy-MM-ddThh:mm:ss"))
 
   let fsxHeader (date:System.DateTime) title = 
@@ -105,18 +103,6 @@ module PostHelpers =
     Image = "";
     PostAuthor = "";
 *)"""   title (date.ToString("yyyy-MM-ddThh:mm:ss"))
-
-  let beerHeader author tags url description (date:System.DateTime) title = 
-     sprintf """@{
-    Layout = "beer";
-    Tags = "%s";
-    ContentUrl = "%s";
-    Image = "";
-    Title = "%s";
-    Description = "%s";
-    PostAuthor = "%s";
-    AddedDate = "%s";
-}"""  tags url title description author (date.ToString("yyyy-MM-ddThh:mm:ss")) 
 
   // Creates a new markdown page.
   let CreateMarkdownPage path title = 
