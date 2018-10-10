@@ -16,7 +16,7 @@
 
                     for( int i = 0; i < beerTagList.Count; i++ )
                     {
-                        var urlFriendlyName = beerTagList[i].Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower();
+                        var urlFriendlyName = beerTagList[i].Trim().Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower();
                         <a href="~/beer/tags/@urlFriendlyName/index.html">@beerTagList[i]</a>
                         if( i < beerTagList.Count - 1 )
                         {
