@@ -5,12 +5,22 @@
 }
 @using System.Linq
 
-<ul class="post-list">
-@foreach (var post in Model.Posts)
+<p>While this blog is mainly for myself and to help keep track of interesting stuff I find on the web, I hope some of it will be useful to you as well.</p>
+
+@if(Model.Posts.Count() == 0)
 {
-    <li>
-        <span class="post-meta">@post.AddedDate.ToString("MMM dd, yyyy")</span>
-        <a class="post-link" href="@post.Url/index.html">@post.Title</a>
-    </li>
+    <p>Unfortunately, nothing to see here yet. Please come back soon.</p>
 }
-</ul>
+else
+{
+    <ul class="post-list">
+    @foreach (var post in Model.Posts)
+    {
+        <li>
+            <span class="post-meta">@post.AddedDate.ToString("MMM dd, yyyy")</span>
+            <a class="post-link" href="@post.Url/index.html">@post.Title</a>
+        </li>
+    }
+    </ul>
+}
+

@@ -1,0 +1,16 @@
+@{
+    Layout = "tagpage";
+    Title = "Beer Tags";
+    Description = "A blog aware static site generator in mostly F#";
+}
+
+@foreach (var post in Model.TaggedBeers)
+{
+    <p>@post.Name (@post.Beers.Count())<br />
+    @foreach (var beer in post.Beers)
+    {
+        <span class="post-meta">@beer.AddedDate.ToString("MMM dd, yyyy")</span>    
+        <a href="~/beer/@beer.Url/index.html">@beer.Title</a><br />
+    } 
+    </p>
+}

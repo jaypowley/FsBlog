@@ -1,7 +1,7 @@
 @{
     Layout = "default";
     Title = "Beer";
-    Description = "A collection of (most) of the beer I drink and remember to write about.";
+    Description = "A collection of (most) of the beer I drink and remember to post about.";
 }
 
 <p>Welcome to my beer diary.</p>
@@ -10,11 +10,11 @@
 Sadly, these will be posted nearly daily, or until I run low on funds or my wife decides I need to cut back.😂</p>
 
 <ul class="post-list">
-@foreach (var post in Model.Beers)
+@foreach (var beer in Model.Beers)
 {
     <li>
-        <span class="post-meta">@post.AddedDate.ToString("MMM dd, yyyy")</span>
-        <a class="post-link" href="@post.Url/index.html">@post.Title</a>
+        <span class="post-meta">@beer.AddedDate.ToString("MMM dd, yyyy")</span>
+        <a class="post-link" href="@beer.Url/index.html">@beer.Title</a>
     </li>
 }
 </ul>

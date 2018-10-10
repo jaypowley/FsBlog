@@ -5,17 +5,22 @@
 }
 @using System.Linq
 
-<p>Welcome to my beer diary.</p>
+<p>While this blog is mainly for myself and to help keep track of interesting stuff I find on the web, I hope some of it will be useful to you as well.</p>
 
-<p>These are posts of the beers I've tried and either the descriptions of them directly from the brewery, Tavour, or my personal tastes. 
-Sadly, these will be posted nearly daily, or until I run low on funds or my wife decides I need to cut back.😂</p>
-
-<ul class="post-list">
-@foreach (var post in Model.Posts)
+@if(Model.Posts.Count() == 0)
 {
-    <li>
-        <span class="post-meta">@post.AddedDate.ToString("MMM dd, yyyy")</span>
-        <a class="post-link" href="@post.Url/index.html">@post.Title</a>
-    </li>
+    <p>Unfortunately, nothing to see here yet. Please come back soon.</p>
 }
-</ul>
+else
+{
+    <ul class="post-list">
+    @foreach (var post in Model.Posts)
+    {
+        <li>
+            <span class="post-meta">@post.AddedDate.ToString("MMM dd, yyyy")</span>
+            <a class="post-link" href="@post.Url/index.html">@post.Title</a>
+        </li>
+    }
+    </ul>
+}
+
