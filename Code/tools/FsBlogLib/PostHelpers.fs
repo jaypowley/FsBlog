@@ -148,8 +148,8 @@ module PostHelpers =
     File.WriteAllText(filename, (createHeader now title))
 
   /// Creates a new blank markdown post.
-  let CreateMarkdownPost path title = 
-    CreateFile path (markdownHeader "post") "md" title 
+  let CreateMarkdownPost path title layout = 
+    CreateFile path (markdownHeader layout) "md" title 
 
   /// Creates a new blank fsx post.
   let CreateFsxPost path title = 
