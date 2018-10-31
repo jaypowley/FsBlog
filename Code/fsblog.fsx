@@ -99,6 +99,8 @@ let buildSite routing updateTagArchive =
 
     FileHelpers.CopyFiles content output
 
+    Blog.GenerateSitemap (new Uri(root)) output (output ++ "sitemap.xml")
+
 // --------------------------------------------------------------------------------------
 // Static site tooling as a set of targets.
 // --------------------------------------------------------------------------------------

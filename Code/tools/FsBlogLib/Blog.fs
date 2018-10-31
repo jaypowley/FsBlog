@@ -208,3 +208,37 @@ module Blog =
         if not (File.Exists(blogTagTarget)) then
             TransformFile template true blograzor None "../BlogContent/blog/tags/tag/tagindex.cshtml" blogTagTarget
 
+  let GenerateSitemap root output target = 
+    printfn "Generating %s" target
+    let sitemapXmlNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
+ 
+    let xname str = XName.Get(str, sitemapXmlNamespace)
+ 
+    let sourceFiles path =
+        let fileList =
+            [ for file in Directory.EnumerateFiles(path, "*.html", SearchOption.AllDirectories) do
+                let index = path.Length
+                let rtn = file.Substring(index)
+                yield rtn ]
+        fileList.Tail // excluding first item = root index.html
+ 
+    let urls = [ for file in (sourceFiles output) do
+                    let uri = new Uri(root, file)
+                    yield uri.AbsoluteUri ]
+
+    let urlItems = List.append [root.AbsoluteUri] urls 
+ 
+    let items =
+        [ for url in urlItems ->
+               XElement
+                ( xname "url",
+                  XElement( xname "loc", url ),
+                  XElement( xname "lastmod", DateTime.Now) )
+        ]
+ 
+    let urlset = XElement ( xname "urlset", List.toArray items )
+ 
+    let doc = new XDocument(new XDeclaration("1.0", "UTF-8", "true"))
+    doc.Add(urlset)
+    EnsureDirectory(Path.GetDirectoryName(target))
+    doc.Save(target)
