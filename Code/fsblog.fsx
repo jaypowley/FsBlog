@@ -141,9 +141,9 @@ Target "New" (fun _ ->
     match page, post, fsx, beer with
     | "", "", "", "" -> traceError "Please specify either a new 'page', 'post', 'beer', or 'fsx'."
     | _, "", "", ""  -> PostHelpers.CreateMarkdownPage source page
-    | "", _, "", ""  -> PostHelpers.CreateMarkdownPost blog post
+    | "", _, "", ""  -> PostHelpers.CreateMarkdownPost blog post "blogpost"
     | "", "", _, ""  -> PostHelpers.CreateFsxPost blog fsx
-    | "", "", "", _  -> PostHelpers.CreateMarkdownPost beers beer
+    | "", "", "", _  -> PostHelpers.CreateMarkdownPost beers beer "beerpost"
     | _, _, _, _    -> traceError "Please specify only one argument, 'post' or 'fsx'."
 )
 
