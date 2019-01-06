@@ -317,7 +317,16 @@ h6 {
      line-height: 24px;
      text-align: center;
      color: #828282; }
- 
+     
+  /* Image subtext/credit */
+  .img-credit { 
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+    margin-top: -25px;
+    margin-bottom: 10px;
+    color: #797979; }
+
  .canvas > .container {
    position: relative;
    z-index: 2; }

@@ -2,16 +2,16 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://localhost:8080
+url: https://jasonpowley.com
 gitlocation: https://github.com/jaypowley/FsBlog.git
 gitbranch: master
-title: FsBlog
-description: Add something here
-source: ../BlogContent/
-blog: ../BlogContent/blog/
-blogIndex: ../BlogContent/blog/index.cshtml
-beers: ../BlogContent/beer/
-beerIndex: ../BlogContent/beer/index.cshtml
+title: JasonPowley.com
+description: A blog of beer and code
+source: C:\Users\Jason\Documents\BlogSource/
+blog: C:\Users\Jason\Documents\BlogSource/blog/
+blogIndex: C:\Users\Jason\Documents\BlogSource/blog/index.cshtml
+beers: C:\Users\Jason\Documents\BlogSource/beer/
+beerIndex: C:\Users\Jason\Documents\BlogSource/beer/index.cshtml
 layouts: layouts
 content: content
 template: tools/empty-template.html
