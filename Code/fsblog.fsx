@@ -97,7 +97,7 @@ let buildSite routing updateTagArchive =
         printfn "Processing file: %s" (current.Substring(source.Length))
         Blog.TransformFile template true razor None current target
 
-    FileHelpers.CopyFiles content output
+    FileHelpers.CopyFiles (source ++ "assets") (output ++ "assets")
 
     Blog.GenerateSitemap (new Uri(root)) output (output ++ "sitemap.xml")
 
