@@ -16,7 +16,7 @@
 
                     for( int i = 0; i < blogTagList.Count; i++ )
                     {
-                        var urlFriendlyName = blogTagList[i].Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower();
+                        var urlFriendlyName = blogTagList[i].Trim().Replace("#", "sharp").Replace(" ", "-").Replace(".", "dot").ToLower();
                         <a href="~/blog/tags/@urlFriendlyName/index.html">@blogTagList[i]</a>
                         if( i < blogTagList.Count - 1 )
                         {
