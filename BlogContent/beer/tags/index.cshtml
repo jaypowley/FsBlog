@@ -6,7 +6,7 @@
 @using System.Linq
 
 <h2>Beer Tags</h2>
-@foreach (var post in Model.TaggedBeers)
+@foreach (var post in Model.TaggedBeers.OrderBy(x => x.Name))
 {
     <p>@post.Name (@post.Beers.Count())<br />
     @foreach (var beer in post.Beers)
